@@ -9,12 +9,12 @@
     "local"
   ],
   "name": {
-    "en": "Garo Chargebox Single - GLB",
-    "sv": "Garo Laddbox Singel - GLB"
+    "en": "Garo - GLB",
+    "sv": "Garo - GLB"
   },
   "description": {
-    "en": "Garo EV chargers - \"Charge smarter\"",
-    "sv": "Garo elbilsladdare - \"Ladda smartare\""
+    "en": "Garo Chargebox Single - GLB: - \"Smarter home charging\"",
+    "sv": "Garo Laddbox Singel - GLB: \"Smartare laddning hemma\""
   },
   "category": [
     "energy"

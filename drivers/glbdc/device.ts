@@ -7,10 +7,12 @@ const baseUrl = 'servlet/rest/chargebox'; // Prefix with http://192.168.123:8080
 const setModeUrl = `${baseUrl}/mode`; // /ALWAYS_OFF /SCHEMA /ALWAYS_ON - see Mode type
 const statusUrl = `${baseUrl}/status?_=`;
 const meterInfoUrl = `${baseUrl}/meterinfo/EXTERNAL?_=`
+const energyUrl = `${baseUrl}/energy`;
 
 class Charger extends Homey.Device {
   currentStatus?: Status;
-  interval?: NodeJS.Timer;
+  statusInterval?: NodeJS.Timer;
+  energyInterval?: NodeJS.Timer;
   address?: string;
 
   /**
@@ -20,8 +22,10 @@ class Charger extends Homey.Device {
     this.log('GARO charge box device has been initialized');
     this.address = this.getStoreValue('address');
 
-    this.interval = setInterval(() => { this.pollStatus() }, 10000);
+    this.statusInterval = setInterval(() => { this.pollStatus() }, 10000);
     this.pollStatus();
+    this.energyInterval = setInterval(() => { this.pollEnergy() }, 20000);
+    this.pollEnergy();
 
     // if (this.hasCapability('connector') === false) {
     //   // You need to check if migration is needed
@@ -75,8 +79,11 @@ class Charger extends Homey.Device {
    */
   async onDeleted() {
     this.log('Charger has been deleted');
-    if (this.interval) {
-      clearInterval(this.interval);
+    if (this.statusInterval) {
+      clearInterval(this.statusInterval);
+    }
+    if (this.energyInterval) {
+      clearInterval(this.energyInterval);
     }
   }
 
@@ -91,6 +98,27 @@ class Charger extends Homey.Device {
     this.log('onDiscoveryAvailable', discoveryResult);
   }
 
+  async pollEnergy() {
+    const dateNow = new Date();
+    const data = {
+      chargeboxSerial: this.currentStatus?.serialNumber.toString(),
+      meterSerial: "DEFAULT",
+      month: (dateNow.getMonth() + 1).toString(),
+      resolution: "DAY",
+      year: dateNow.getFullYear().toString(),
+    };
+    const url = `http://${this.address}:8080/${energyUrl}`;
+    const result = await fetch.post(url, data);
+    try {
+      const response = JSON.parse(result.data);
+      if (response.stopValue) {
+        this.setCapabilityValue('meter_power', response.stopValue).catch(this.error);
+      }
+    } catch (e) {
+      this.error(e);
+    }
+  }
+
   async pollStatus() {
     const result: Status = await fetch.json(`http://${this.address}:8080/${statusUrl}${(new Date()).getTime()}`);
 
@@ -98,11 +126,9 @@ class Charger extends Homey.Device {
 
     if (result.connector === "CHARGING") {
       this.setCapabilityValue('measure_current', result.currentChargingCurrent / 1000).catch(this.error);
-      this.setCapabilityValue('meter_power', result.accSessionEnergy / 1000).catch(this.error);
       this.setCapabilityValue('measure_power', result.currentChargingPower).catch(this.error);
     } else {
-      this.setCapabilityValue('measure_current', null).catch(this.error);
-      this.setCapabilityValue('meter_power', null).catch(this.error);
+      this.setCapabilityValue('measure_current', 0).catch(this.error);
       this.setCapabilityValue('measure_power', 0).catch(this.error);
     }
 
