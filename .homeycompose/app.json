@@ -1,0 +1,42 @@
+{
+  "id": "com.softblockrefinery.garo-charger-meter",
+  "version": "1.0.0",
+  "compatibility": ">=5.0.0",
+  "brandColor": "#e30421",
+  "sdk": 3,
+  "platforms": [
+    "local"
+  ],
+  "name": {
+    "en": "Garo EV chargers",
+    "sv": "Garo elbilsladdare"
+  },
+  "description": {
+    "en": "Garo EV Chargers - \"Charge smarter\"",
+    "sv": "Garo elbilsladdare - \"Ladda smartare\""
+  },
+  "category": [
+    "energy"
+  ],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "author": {
+    "name": "Fredric Georgsson",
+    "email": "fredric@softblockrefinery.com"
+  },
+  "tags": {
+    "en": [
+      "Garo",
+      "charger",
+      "EV charger"
+    ],
+    "sv": [
+      "Garo",
+      "laddare",
+      "elbilsladdare"
+    ]
+  }
+}

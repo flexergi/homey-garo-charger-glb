@@ -1,0 +1,36 @@
+{
+    "type": "enum",
+    "title": {
+        "en": "Availability",
+        "sv": "Tillgänglighet"
+    },
+    "getable": true,
+    "setable": true,
+    "uiComponent": "picker",
+    "uiQuickAction": false,
+    "insights": true,
+    "values": [
+        {
+            "id": "ALWAYS_ON",
+            "title": {
+                "en": "Always available",
+                "sv": "Alltid tillgänglig"
+            }
+        },
+        {
+            "id": "ALWAYS_OFF",
+            "title": {
+                "en": "Not available",
+                "sv": "Ej tillgänglig"
+            }
+        },
+        {
+            "id": "SCHEMA",
+            "title": {
+                "en": "Scheduled",
+                "sv": "Schemastyrd"
+            }
+        }
+    ],
+    "icon": "/assets/mode.svg"
+  }

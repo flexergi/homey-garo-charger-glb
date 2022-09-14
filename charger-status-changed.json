@@ -1,0 +1,24 @@
+{
+  "title": {
+    "en": "Charger status changed",
+    "sv": "Laddarens status ändrades"
+  },
+  "hint": {
+    "en": "Cable connected, charging started etc",
+    "sv": "Kabel inkopplad, laddning påbörjad etc"
+  },
+  "tokens": [
+    {
+      "type": "string",
+      "name": "status",
+      "title": {
+        "en": "status",
+        "sv": "status"
+      },
+      "example": {
+        "en": "Charger status",
+        "sv": "Laddarens status"
+      }
+    }
+  ]
+}

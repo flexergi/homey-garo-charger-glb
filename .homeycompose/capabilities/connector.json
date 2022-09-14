@@ -1,0 +1,50 @@
+{
+    "type": "enum",
+    "title": {
+        "en": "Connector",
+        "sv": "Kontakt"
+    },
+    "getable": true,
+    "setable": false,
+    "uiComponent": "picker",
+    "uiQuickAction": false,
+    "insights": true,
+    "values": [
+        {
+            "id": "DISABLED",
+            "title": {
+                "en": "Deactivated",
+                "sv": "Deaktiverad"
+            }
+        },
+        {
+            "id": "NOT_CONNECTED",
+            "title": {
+                "en": "Not connected",
+                "sv": "Ej ansluten"
+            }
+        },
+        {
+            "id": "CONNECTED",
+            "title": {
+                "en": "Waiting for startsignal from car",
+                "sv": "Väntar på startsignal från bil"
+            }
+        },
+        {
+            "id": "CHARGING",
+            "title": {
+                "en": "Charging",
+                "sv": "Laddar"
+            }
+        },
+        {
+            "id": "CHARGING_FINISHED",
+            "title": {
+                "en": "Charging finished",
+                "sv": "Laddning färdig"
+            }
+        }
+    ],
+    "icon": "/assets/connector.svg"
+  }
