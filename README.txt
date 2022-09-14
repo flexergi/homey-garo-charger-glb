@@ -1,5 +1,3 @@
-Starta och stoppa laddningen av din bil baserat på ett schema, eller baserat på andra villkor du implementerar i ett flöde.
-Starta ett flöde när din bil börjar ladda, eller skicka en notifiering om du glömt plugga in bilen. Inaktivera laddaren om du lämnar hemmet under en längre period.
-Få tillgång till statistik kring förbrukning.
+Start and stop charging your car on a schedule, or based on other conditions you model in a flow. Take action when your car starts charging, or send a notification if no car is connected at a certain time to remind you to plug in your car. Disable your charger if you leave your home for a longer period. Access statistics.
 
-För mer information om appen eller för support var vänlig och använd e-postadressen längre ner på sidan tills vidare.
+For more information about the app and possibly get support please use the email below for now.
