@@ -1,4 +1,4 @@
-import { ConnectorState } from "./connector-state";
+import { ConnectorStatus } from "./connector-status";
 import { Mode } from "./mode";
 
 export type Status = {
@@ -7,7 +7,7 @@ export type Status = {
   connectedToInternet: boolean;
   freeCharging: boolean;
   ocppConnectionState: unknown;
-  connector: ConnectorState;
+  connector: ConnectorStatus;
   mode: Mode;
   currentLimit: number;
   factoryCurrentLimit: number; // amp (32)

@@ -1,4 +1,4 @@
-export enum ConnectorState {
+export enum ConnectorStatus {
   Disabled = "DISABLED",
   NotConnected = "NOT_CONNECTED",
   Connected = "CONNECTED",

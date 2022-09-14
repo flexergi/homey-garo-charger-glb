@@ -1,0 +1,179 @@
+{
+  "triggers": [
+    {
+      "id": "connectorChanged",
+      "title": {
+        "en": "Charger status changed",
+        "sv": "Laddarens status ändrades"
+      },
+      "titleFormatted": {
+        "en": "Charger status changed to [[status]]",
+        "sv": "Laddarens status ändrades till [[status]]"
+      },
+      "tokens": [
+        {
+          "name": "status",
+          "type": "string",
+          "title": {
+            "en": "Charger status",
+            "sv": "Laddarens status"
+          },
+          "example": {
+            "en": "Disabled, Not connected, Connected",
+            "sv": "Stängd, Ej inkopplad, Inkopplad"
+          }
+        }
+      ]
+    }
+  ],
+  "conditions": [
+    {
+      "id": "connectorStatus",
+      "title": {
+        "en": "Charger status is !{{|not}}",
+        "sv": "Laddarens status är !{{|inte}}"
+      },
+      "titleFormatted": {
+        "en": "Charger status is !{{|not}} [[connector]]",
+        "sv": "Laddarens status är !{{|inte}} [[connector]]"
+      },
+      "args": [
+        {
+          "name": "connector",
+          "type": "dropdown",
+          "title": {
+            "en": "Status",
+            "sv": "Status"
+          },
+          "values": [
+            {
+              "id": "DISABLED",
+              "label": {
+                "en": "Disabled",
+                "sv": "Ej tillgänglig"
+              }
+            },
+            {
+              "id": "NOT_CONNECTED",
+              "label": {
+                "en": "Not connected",
+                "sv": "Ej ansluten"
+              }
+            },
+            {
+              "id": "CONNECTED",
+              "label": {
+                "en": "Connected",
+                "sv": "Ansluten"
+              }
+            },
+            {
+              "id": "CHARGING",
+              "label": {
+                "en": "Charging",
+                "sv": "Laddar"
+              }
+            },
+            {
+              "id": "CHARGING_FINISHED",
+              "label": {
+                "en": "Charging finished",
+                "sv": "Laddning avslutad"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mode",
+      "title": {
+        "en": "Charger mode is !{{|not}}",
+        "sv": "Laddarens läge är !{{|inte}}"
+      },
+      "titleFormatted": {
+        "en": "Charger mode is !{{|not}} [[mode]]",
+        "sv": "Laddarens läge är !{{|inte}} [[mode]]"
+      },
+      "args": [
+        {
+          "name": "mode",
+          "type": "dropdown",
+          "title": {
+            "en": "Mode",
+            "sv": "Läge"
+          },
+          "values": [
+            {
+              "id": "ALWAYS_ON",
+              "label": {
+                "en": "Available for charging",
+                "sv": "Tillgänglig för laddning"
+              }
+            },
+            {
+              "id": "ALWAYS_OFF",
+              "label": {
+                "en": "Not available for charging",
+                "sv": "Ej tillgänglig för laddning"
+              }
+            },
+            {
+              "id": "SCHEMA",
+              "label": {
+                "en": "Schedule",
+                "sv": "Schemastyrd"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "id": "modeControl",
+      "title": {
+        "en": "Control charger mode",
+        "sv": "Styr laddarens läge för tillgänglighet"
+      },
+      "titleFormatted": {
+        "en": "Set state to [[mode]]",
+        "sv": "Ändra läge för tillgänglighet till [[mode]]"
+      },
+      "args": [
+        {
+          "name": "mode",
+          "type": "dropdown",
+          "title": {
+            "en": "Mode",
+            "sv": "Läge"
+          },
+          "values": [
+            {
+              "id": "ALWAYS_ON",
+              "label": {
+                "en": "Available for charging",
+                "sv": "Tillgänglig för laddning"
+              }
+            },
+            {
+              "id": "ALWAYS_OFF",
+              "label": {
+                "en": "Not available for charging",
+                "sv": "Ej tillgänglig för laddning"
+              }
+            },
+            {
+              "id": "SCHEMA",
+              "label": {
+                "en": "Schedule",
+                "sv": "Schemastyrd"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -8,7 +8,7 @@ const setModeUrl = `${baseUrl}/mode`; // /ALWAYS_OFF /SCHEMA /ALWAYS_ON - see Mo
 const statusUrl = `${baseUrl}/status?_=`;
 const meterInfoUrl = `${baseUrl}/meterinfo/EXTERNAL?_=`
 
-class MyDevice extends Homey.Device {
+class Charger extends Homey.Device {
   currentStatus?: Status;
   interval?: NodeJS.Timer;
   address?: string;
@@ -41,16 +41,18 @@ class MyDevice extends Homey.Device {
       await this.addCapability('mode');
     }
 
-    this.registerCapabilityListener("mode", async (value: Mode) => {
-      await fetch.post(`http://${this.address}:8080/${setModeUrl}/${value}`).catch(this.error);
-    });
+    this.registerCapabilityListener("mode", (mode: Mode) => this.setMode(mode).catch(this.error));
+  }
+
+  async setMode(value: Mode) {
+    return fetch.post(`http://${this.address}:8080/${setModeUrl}/${value}`);
   }
 
   /**
    * onAdded is called when the user adds the device, called just after pairing.
    */
   async onAdded() {
-    this.log('MyDevice has been added');
+    this.log('Charger has been added');
   }
 
   /**
@@ -62,7 +64,7 @@ class MyDevice extends Homey.Device {
    * @returns {Promise<string|void>} return a custom message that will be displayed
    */
   async onSettings({ oldSettings: {}, newSettings: {}, changedKeys: {} }): Promise<string|void> {
-    this.log('MyDevice settings where changed');
+    this.log('Charger settings where changed');
   }
 
   /**
@@ -71,14 +73,14 @@ class MyDevice extends Homey.Device {
    * @param {string} name The new name
    */
   async onRenamed(name: string) {
-    this.log('MyDevice was renamed');
+    this.log('Charger was renamed');
   }
 
   /**
    * onDeleted is called when the user deleted the device.
    */
   async onDeleted() {
-    this.log('MyDevice has been deleted');
+    this.log('Charger has been deleted');
     if (this.interval) {
       clearInterval(this.interval);
     }
@@ -98,6 +100,8 @@ class MyDevice extends Homey.Device {
   async pollStatus() {
     const result: Status = await fetch.json(`http://${this.address}:8080/${statusUrl}${(new Date()).getTime()}`);
 
+    this.setCapabilityValue('measure_temperature', result.currentTemperature).catch(this.error);
+
     if (result.connector === "CHARGING") {
       this.setCapabilityValue('measure_current', result.currentChargingCurrent / 1000).catch(this.error);
       this.setCapabilityValue('meter_power', result.accSessionEnergy / 1000).catch(this.error);
@@ -107,24 +111,31 @@ class MyDevice extends Homey.Device {
       this.setCapabilityValue('meter_power', null).catch(this.error);
       this.setCapabilityValue('measure_power', 0).catch(this.error);
     }
-    this.setCapabilityValue('measure_temperature', result.currentTemperature).catch(this.error);
 
     // Connector
-    this.log('this.getCapabilityValue(connector)', this.getCapabilityValue('connector'));
-    this.log('result.connector', result.connector);
+    // this.log('this.getCapabilityValue(connector)', this.getCapabilityValue('connector'));
+    // this.log('result.connector', result.connector);
     if (this.getCapabilityValue('connector') !== result.connector) {
-      this.setCapabilityValue('connector', result.connector).catch(this.error);
+      await this.setCapabilityValue('connector', result.connector).catch(this.error);
     }
 
     // Mode
-    this.log('this.getCapabilityValue(mode)', this.getCapabilityValue('mode'));
-    this.log('result.mode', result.mode);
+    // this.log('this.getCapabilityValue(mode)', this.getCapabilityValue('mode'));
+    // this.log('result.mode', result.mode);
     if (this.getCapabilityValue('mode') !== result.mode) {
-      this.setCapabilityValue('mode', result.mode).catch(this.error);
+      await this.setCapabilityValue('mode', result.mode).catch(this.error);
+    }
+
+    // Trigger actions now that all capabilities are updated
+    if (this.currentStatus?.connector !== result.connector) {
+      this.driver.ready().then(async () => {
+        // @ts-ignore
+        await this.driver.triggerDeviceFlow('connectorChanged', { status: result.connector }, this);
+      });
     }
 
     this.currentStatus = result;
   }
 }
 
-module.exports = MyDevice;
+module.exports = Charger;

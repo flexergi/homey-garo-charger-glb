@@ -1,3 +1,3 @@
-export * from './connector-state';
+export * from './connector-status';
 export * from './mode';
 export * from './status';

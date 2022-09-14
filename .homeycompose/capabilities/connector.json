@@ -1,8 +1,8 @@
 {
     "type": "enum",
     "title": {
-        "en": "Connector",
-        "sv": "Kontakt"
+        "en": "Charger status",
+        "sv": "Laddarens status"
     },
     "getable": true,
     "setable": false,
