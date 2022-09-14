@@ -1,4 +1,5 @@
-Adds support for Garo's electric vehicle chargers and any connected smart meter.
+Starta och stoppa laddningen av din bil baserat på ett schema, eller baserat på andra villkor du implementerar i ett flöde.
+Starta ett flöde när din bil börjar ladda, eller skicka en notifiering om du glömt plugga in bilen. Inaktivera laddaren om du lämnar hemmet under en längre period.
+Få tillgång till statistik kring förbrukning.
 
-Triggers include cable connection state, charging state, power and more. The
-values are logged in insights. Availability can be toggled between on/off/schedule.
+För mer information om appen eller för support var vänlig och använd e-postadressen längre ner på sidan tills vidare.
