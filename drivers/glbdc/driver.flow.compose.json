@@ -6,10 +6,6 @@
         "en": "Charger status changed",
         "sv": "Laddarens status ändrades"
       },
-      "titleFormatted": {
-        "en": "Charger status changed to [[status]]",
-        "sv": "Laddarens status ändrades till [[status]]"
-      },
       "tokens": [
         {
           "name": "status",
@@ -21,6 +17,27 @@
           "example": {
             "en": "Disabled, Not connected, Connected",
             "sv": "Stängd, Ej inkopplad, Inkopplad"
+          }
+        }
+      ]
+    },
+    {
+      "id": "modeChanged",
+      "title": {
+        "en": "Availability mode changed",
+        "sv": "Tillgänglighetsläge ändrades"
+      },
+      "tokens": [
+        {
+          "name": "mode",
+          "type": "string",
+          "title": {
+            "en": "Availability mode",
+            "sv": "Tillgänglighetsläge"
+          },
+          "example": {
+            "en": "Schedule",
+            "sv": "Schemastyrd"
           }
         }
       ]

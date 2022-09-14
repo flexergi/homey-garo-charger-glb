@@ -9,11 +9,11 @@
     "local"
   ],
   "name": {
-    "en": "Garo EV chargers",
-    "sv": "Garo elbilsladdare"
+    "en": "Garo Chargebox Single - GLB",
+    "sv": "Garo Laddbox Singel - GLB"
   },
   "description": {
-    "en": "Garo EV Chargers - \"Charge smarter\"",
+    "en": "Garo EV chargers - \"Charge smarter\"",
     "sv": "Garo elbilsladdare - \"Ladda smartare\""
   },
   "category": [
@@ -49,10 +49,6 @@
           "en": "Charger status changed",
           "sv": "Laddarens status ändrades"
         },
-        "titleFormatted": {
-          "en": "Charger status changed to [[status]]",
-          "sv": "Laddarens status ändrades till [[status]]"
-        },
         "tokens": [
           {
             "name": "status",
@@ -64,6 +60,34 @@
             "example": {
               "en": "Disabled, Not connected, Connected",
               "sv": "Stängd, Ej inkopplad, Inkopplad"
+            }
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=glbdc"
+          }
+        ]
+      },
+      {
+        "id": "modeChanged",
+        "title": {
+          "en": "Availability mode changed",
+          "sv": "Tillgänglighetsläge ändrades"
+        },
+        "tokens": [
+          {
+            "name": "mode",
+            "type": "string",
+            "title": {
+              "en": "Availability mode",
+              "sv": "Tillgänglighetsläge"
+            },
+            "example": {
+              "en": "Schedule",
+              "sv": "Schemastyrd"
             }
           }
         ],
