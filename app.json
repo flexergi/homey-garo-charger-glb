@@ -13,8 +13,8 @@
     "sv": "Garo - GLB"
   },
   "description": {
-    "en": "Garo Chargebox Single - GLB: - \"Smarter home charging\"",
-    "sv": "Garo Laddbox Singel - GLB: \"Smartare laddning hemma\""
+    "en": "Smarter home charging",
+    "sv": "Smartare laddning hemma"
   },
   "category": [
     "energy"
@@ -271,7 +271,6 @@
         "en": "GLBDC"
       },
       "class": "other",
-      "discovery": "mac",
       "capabilities": [
         "measure_current",
         "meter_power",
@@ -291,15 +290,31 @@
       },
       "pair": [
         {
-          "id": "list_devices",
-          "template": "list_devices",
-          "navigation": {
-            "next": "add_devices"
-          }
+          "id": "configure_ip"
         },
         {
           "id": "add_devices",
           "template": "add_devices"
+        }
+      ],
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "IP address",
+            "sv": "IP-adress"
+          },
+          "children": [
+            {
+              "id": "host",
+              "type": "text",
+              "value": "0.0.0.0",
+              "label": {
+                "en": "IP address",
+                "sv": "IP adress"
+              }
+            }
+          ]
         }
       ],
       "id": "glbdc"
@@ -391,20 +406,6 @@
         }
       ],
       "icon": "/assets/mode.svg"
-    }
-  },
-  "discovery": {
-    "mac": {
-      "type": "mac",
-      "mac": {
-        "manufacturer": [
-          [
-            184,
-            39,
-            235
-          ]
-        ]
-      }
     }
   }
 }
