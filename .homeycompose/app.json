@@ -1,6 +1,6 @@
 {
   "id": "com.softblockrefinery.garo-charger-meter",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "compatibility": ">=5.0.0",
   "brandColor": "#e30421",
   "sdk": 3,
