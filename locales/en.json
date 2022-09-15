@@ -1,1 +1,11 @@
-{}
+{
+  "pair": {
+    "configuration" : {
+      "name": "Name",
+      "nameExplanation" : "What would you like your charger to be called?",
+      "ip_address" : "IP address",
+      "connect" : "Add device",
+      "ipAddressExplanation" : "Type the IP address that you charger is using. Make the address static in your router or DHCP server."
+    }
+  }
+}

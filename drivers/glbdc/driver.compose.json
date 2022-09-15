@@ -3,7 +3,6 @@
     "en": "GLBDC"
   },
   "class": "other",
-  "discovery": "mac",
   "capabilities": [
     "measure_current",
     "meter_power",
@@ -23,15 +22,31 @@
   },
   "pair": [
     {
-      "id": "list_devices",
-      "template": "list_devices",
-      "navigation": {
-        "next": "add_devices"
-      }
+      "id": "configure_ip"
     },
     {
       "id": "add_devices",
       "template": "add_devices"
+    }
+  ],
+  "settings": [
+    {
+      "type": "group",
+      "label": {
+        "en": "IP address",
+        "sv": "IP-adress"
+      },
+      "children": [
+        {
+          "id": "host",
+          "type": "text",
+          "value": "0.0.0.0",
+          "label": {
+            "en": "IP address",
+            "sv": "IP adress"
+          }
+        }
+      ]
     }
   ]
 }

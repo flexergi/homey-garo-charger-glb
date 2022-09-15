@@ -1,5 +1,7 @@
 import Homey from 'homey';
-import { Mode } from '../../types';
+import fetch from 'http.min';
+import { Status } from '../../types';
+import { statusUrl } from './device-const';
 
 class ChargerDriver extends Homey.Driver {
   flowCards: Record<string, Homey.FlowCardCondition | Homey.FlowCardAction | Homey.FlowCardTriggerDevice> = {};
@@ -64,22 +66,51 @@ class ChargerDriver extends Homey.Driver {
    * This should return an array with the data of devices that are available for pairing.
    */
   async onPairListDevices() {
-    const discoveryStrategy = this.getDiscoveryStrategy();
-    const discoveryResults = discoveryStrategy.getDiscoveryResults();
+    console.log("Pairing started");
+    return [];
+  }
 
-    console.log('discovery results', discoveryResults);
+  async onPair(session: any) {
+    await session.showView("configure_ip");
 
-    const devices = Object.keys(discoveryResults).map(key => ({
-      name: `Garo GLB ${discoveryResults[key].id.substring(12)}`,
-      data: {
-        id: discoveryResults[key].id,
-      },
-      store: {
-        address: discoveryResults[key].address,
-      },
-    }));
+    session.setHandler("configure_ip", async (data: any) => {
+      this.log('backend configure_ip, ip: ', data.settings.host);
 
-    return devices;
+      let result: { data: Status };
+      try {
+        const options = {
+          timeout: 4000,
+          json: true,
+          protocol: 'http:',
+          hostname: data.settings.host,
+          port: 8080,
+          path: `/${statusUrl}${(new Date()).getTime()}`,
+          headers: {
+            'User-Agent': 'Homey'
+          }
+        };
+        result = await fetch(options);
+      } catch (e: any) {
+        this.error('No response from a Garo charger on this IP address', e.message);
+        throw new Error('No response from a Garo charger on this IP address');
+      }
+
+      this.log('result.data', result.data);
+      if (!result?.data?.serialNumber) {
+        throw new Error('The device on this IP address does not appear to be a Garo charger.');
+      }
+      return {
+        ...data,
+        data: {
+          id: result.data.serialNumber,
+        }
+      };
+    });
+
+    // Received when a view has changed
+    session.setHandler("showView", async function (viewId: string) {
+      console.log("View: " + viewId);
+    });
   }
 }
 

@@ -2,17 +2,12 @@ import Homey from 'homey';
 import fetch from 'http.min';
 import { Mode } from '../../types';
 import { Status } from '../../types/status';
-
-const baseUrl = 'servlet/rest/chargebox'; // Prefix with http://192.168.123:8080 device addres
-const setModeUrl = `${baseUrl}/mode`; // /ALWAYS_OFF /SCHEMA /ALWAYS_ON - see Mode type
-const statusUrl = `${baseUrl}/status?_=`;
-const meterInfoUrl = `${baseUrl}/meterinfo/EXTERNAL?_=`
-const energyUrl = `${baseUrl}/energy`;
+import { energyUrl, setModeUrl, statusUrl } from './device-const';
 
 class Charger extends Homey.Device {
   currentStatus?: Status;
-  statusInterval?: NodeJS.Timer;
-  energyInterval?: NodeJS.Timer;
+  statusInterval?: NodeJS.Timeout;
+  energyInterval?: NodeJS.Timeout;
   address?: string;
 
   /**
@@ -20,24 +15,24 @@ class Charger extends Homey.Device {
    */
   async onInit() {
     this.log('GARO charge box device has been initialized');
-    this.address = this.getStoreValue('address');
+    this.address = this.getSetting('host');
 
-    this.statusInterval = setInterval(() => { this.pollStatus() }, 10000);
+    this.statusInterval = this.homey.setInterval(() => { this.pollStatus() }, 10000);
     this.pollStatus();
-    this.energyInterval = setInterval(() => { this.pollEnergy() }, 20000);
+    this.energyInterval = this.homey.setInterval(() => { this.pollEnergy() }, 20000);
     this.pollEnergy();
 
-    // if (this.hasCapability('connector') === false) {
-    //   // You need to check if migration is needed
-    //   // do not call addCapability on every init!
-    //   await this.addCapability('connector');
-    // }
+    if (this.hasCapability('connector') === false) {
+      await this.addCapability('connector');
+    }
 
-    // if (this.hasCapability('mode') === false) {
-    //   // You need to check if migration is needed
-    //   // do not call addCapability on every init!
-    //   await this.addCapability('mode');
-    // }
+    if (this.hasCapability('mode') === false) {
+      await this.addCapability('mode');
+    }
+
+    if (this.hasCapability('voltage')) {
+      await this.removeCapability('voltage');
+    }
 
     this.registerCapabilityListener("mode", (mode: Mode) => this.setMode(mode).catch(this.error));
   }
@@ -53,16 +48,10 @@ class Charger extends Homey.Device {
     this.log('Charger has been added');
   }
 
-  /**
-   * onSettings is called when the user updates the device's settings.
-   * @param {object} event the onSettings event data
-   * @param {object} event.oldSettings The old settings object
-   * @param {object} event.newSettings The new settings object
-   * @param {string[]} event.changedKeys An array of keys changed since the previous version
-   * @returns {Promise<string|void>} return a custom message that will be displayed
-   */
-  async onSettings({ oldSettings: {}, newSettings: {}, changedKeys: {} }): Promise<string|void> {
+  async onSettings(event: any): Promise<string|void> {
     this.log('Charger settings were changed');
+    const { newSettings } = event;
+    this.address = newSettings.address;
   }
 
   /**

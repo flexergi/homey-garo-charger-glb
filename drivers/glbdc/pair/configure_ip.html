@@ -1,0 +1,67 @@
+<style type="text/css">
+  .mt {
+    margin-top: 20px;
+  }
+  span label {
+      width: 100px
+  }
+</style>
+<script type="text/javascript">
+  // Set window options
+  var width	= 400;
+  var height	= 400;
+  var left	= (screen.width/2)-(width/2);
+  var top		= (screen.height/2)-(height/2);
+  var url;
+
+  // Set translated items
+  $("label[for='name']").text(__('pair.configuration.name') + ':')
+  $("label[for='ip_address']").text(__('pair.configuration.ip_address') + ':')
+
+  function configure()
+  {
+    $('.error-msg').text('');
+
+    var name = $("#name").val();
+    var ipAddress = $("#ip_address").val();
+
+    var device = {
+      name: name,
+      settings: {
+        host: ipAddress
+      }
+    };
+
+    Homey.emit('configure_ip', device, function(err, result) {
+      if (err) {
+        $('.error-msg').text(err)
+      } else {
+        Homey.createDevice(result)
+          .then(function (result) {
+            Homey.done();
+          })
+          .catch(function (error) {
+            Homey.alert(err);
+          });
+      }
+    });
+  }
+</script>
+
+
+<p class="form-group">
+<span class="input-wrap">
+  <p data-i18n="pair.configuration.nameExplanation"></p>
+  <label for="name"></label>
+  <input type="text" id="name"></input>
+
+  <p class="mt" data-i18n="pair.configuration.ipAddressExplanation"></p>
+  <label for="ip_address"></label>
+  <input type="text" id="ip_address"></input>
+
+</span>
+</p>
+<button class="button mt" id="authentication_button" onclick="configure();" data-i18n="pair.configuration.connect" />
+<br />
+<br />
+<p class="error-msg" style="color: #ff6300;"></p>
