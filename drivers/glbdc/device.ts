@@ -48,32 +48,40 @@ export class Charger extends Homey.Device {
   }
 
   async setMode(value: Mode) {
-    console.log(`POST new mode ${value}`);
-    const result = await fetch.post(`http://${this.address}:8080/${setModeUrl}/${value}`);
-    console.log(`    POST new mode ${value} set`);
-    return result;
+    try {
+      console.log(`POST new mode ${value}`);
+      const result = await fetch.post(`http://${this.address}:8080/${setModeUrl}/${value}`);
+      console.log(`    POST new mode ${value} set`);
+      return result;
+    } catch (e: any) {
+      this.error('POST new mode failed: ', e.message);
+    }
   }
 
   async setCurrentLimit(ampere: number) {
-    const config = await this.getConfig();
+    try {
+      const config = await this.getConfig();
 
-    console.log(`POST new current limit ${ampere}`);
-    const data: Config = {
-      ...config,
-      reducedIntervalsEnabled: true,
-      reducedCurrentIntervals: [
-        {
-          schemaId: 1,
-          chargeLimit: Math.min(config.switchChargeLimit, ampere),
-          start: '00:00:00',
-          stop: '24:00:00',
-          weekday: 8,
-        }
-      ],
-    };
-    const result = await fetch.post(`http://${this.address}:8080/${currentLimitUrl}`, data);
-    console.log(`   POST new current limit ${ampere} set`);
-    return result;
+      console.log(`POST new current limit ${ampere}`);
+      const data: Config = {
+        ...config,
+        reducedIntervalsEnabled: true,
+        reducedCurrentIntervals: [
+          {
+            schemaId: 1,
+            chargeLimit: Math.min(config.switchChargeLimit, ampere),
+            start: '00:00:00',
+            stop: '24:00:00',
+            weekday: 8,
+          }
+        ],
+      };
+      const result = await fetch.post(`http://${this.address}:8080/${currentLimitUrl}`, data);
+      console.log(`   POST new current limit ${ampere} set`);
+      return result;
+    } catch (e: any) {
+      this.error('POST new mode failed: ', e.message);
+    }
   }
 
   /**
@@ -123,23 +131,23 @@ export class Charger extends Homey.Device {
   }
 
   async pollEnergy() {
-    const dateNow = new Date();
-    const data = {
-      chargeboxSerial: this.currentStatus?.serialNumber.toString(),
-      meterSerial: "DEFAULT",
-      month: (dateNow.getMonth() + 1).toString(),
-      resolution: "DAY",
-      year: dateNow.getFullYear().toString(),
-    };
-    const url = `http://${this.address}:8080/${energyUrl}`;
-    const result = await fetch.post(url, data);
     try {
+      const dateNow = new Date();
+      const data = {
+        chargeboxSerial: this.currentStatus?.serialNumber.toString(),
+        meterSerial: "DEFAULT",
+        month: (dateNow.getMonth() + 1).toString(),
+        resolution: "DAY",
+        year: dateNow.getFullYear().toString(),
+      };
+      const url = `http://${this.address}:8080/${energyUrl}`;
+      const result = await fetch.post(url, data);
       const response = JSON.parse(result.data);
       if (response.stopValue) {
         this.setCapabilityValue('meter_power', response.stopValue).catch(this.error);
       }
-    } catch (e) {
-      this.error(e);
+    } catch (e: any) {
+      this.error(e.message);
     }
   }
 
@@ -152,60 +160,64 @@ export class Charger extends Homey.Device {
   }
 
   async pollStatus() {
-    const result: Status = await fetch.json(`http://${this.address}:8080/${statusUrl}${(new Date()).getTime()}`);
+    try {
+      const result: Status = await fetch.json(`http://${this.address}:8080/${statusUrl}${(new Date()).getTime()}`);
 
-    this.setCapabilityValue('measure_temperature', result.currentTemperature).catch(this.error);
+      this.setCapabilityValue('measure_temperature', result.currentTemperature).catch(this.error);
 
-    if (result.connector === "CHARGING") {
-      this.setCapabilityValue('measure_current', result.currentChargingCurrent / 1000).catch(this.error);
-      this.setCapabilityValue('measure_power', result.currentChargingPower).catch(this.error);
-    } else {
-      this.setCapabilityValue('measure_current', 0).catch(this.error);
-      this.setCapabilityValue('measure_power', 0).catch(this.error);
+      if (result.connector === "CHARGING") {
+        this.setCapabilityValue('measure_current', result.currentChargingCurrent / 1000).catch(this.error);
+        this.setCapabilityValue('measure_power', result.currentChargingPower).catch(this.error);
+      } else {
+        this.setCapabilityValue('measure_current', 0).catch(this.error);
+        this.setCapabilityValue('measure_power', 0).catch(this.error);
+      }
+
+      // Connector
+      const currentConnectorValue = this.getCapabilityValue('connector');
+      if (currentConnectorValue !== result.connector) {
+        this.log(`connector changed: current: ${currentConnectorValue} - new: ${result.connector}`);
+        await this.setCapabilityValue('connector', result.connector).catch(this.error);
+      }
+
+      // Mode
+      const currentModeValue = this.getCapabilityValue('mode');
+      if (currentModeValue !== result.mode) {
+        this.log(`mode changed: current: ${currentModeValue} - new: ${result.mode}`);
+        await this.setCapabilityValue('mode', result.mode).catch(this.error);
+      }
+
+      // CurrentLimit
+      const currentCurrentLimitValue = this.getCapabilityValue('current_limit');
+      if (currentCurrentLimitValue !== result.currentLimit) {
+        this.log(`currentLimit changed: current: ${currentCurrentLimitValue} - new: ${result.currentLimit}`);
+        await this.setCapabilityValue('current_limit', result.currentLimit).catch(this.error);
+      }
+
+      // Trigger actions now that all capabilities are updated (change awaited)
+
+      // This one is needed due to name not ending in "_changed" which would have trigger automatically on capability change
+      if (this.currentStatus?.connector !== result.connector) {
+        // @ts-ignore
+        await this.driver.triggerDeviceFlow('connectorChanged', { status: result.connector }, this);
+      }
+
+      // This one is needed due to name not ending in "_changed" which would have trigger automatically on capability change
+      if (this.currentStatus?.mode !== result.mode) {
+        // @ts-ignore
+        await this.driver.triggerDeviceFlow('modeChanged', { mode: result.mode }, this);
+      }
+
+      // Auto triggered by Homey due to name ending in "_changed"
+      // if (this.currentStatus?.currentLimit !== result.currentLimit) {
+        // @ts-ignore
+        // await this.driver.triggerDeviceFlow('current_limit_changed', { currentLimit: result.currentLimit }, this);
+      // }
+
+      this.currentStatus = result;
+    } catch (e: any) {
+      this.error(e);
     }
-
-    // Connector
-    const currentConnectorValue = this.getCapabilityValue('connector');
-    if (currentConnectorValue !== result.connector) {
-      this.log(`connector changed: current: ${currentConnectorValue} - new: ${result.connector}`);
-      await this.setCapabilityValue('connector', result.connector).catch(this.error);
-    }
-
-    // Mode
-    const currentModeValue = this.getCapabilityValue('mode');
-    if (currentModeValue !== result.mode) {
-      this.log(`mode changed: current: ${currentModeValue} - new: ${result.mode}`);
-      await this.setCapabilityValue('mode', result.mode).catch(this.error);
-    }
-
-    // CurrentLimit
-    const currentCurrentLimitValue = this.getCapabilityValue('current_limit');
-    if (currentCurrentLimitValue !== result.currentLimit) {
-      this.log(`currentLimit changed: current: ${currentCurrentLimitValue} - new: ${result.currentLimit}`);
-      await this.setCapabilityValue('current_limit', result.currentLimit).catch(this.error);
-    }
-
-    // Trigger actions now that all capabilities are updated (change awaited)
-
-    // This one is needed due to name not ending in "_changed" which would have trigger automatically on capability change
-    if (this.currentStatus?.connector !== result.connector) {
-      // @ts-ignore
-      await this.driver.triggerDeviceFlow('connectorChanged', { status: result.connector }, this);
-    }
-
-    // This one is needed due to name not ending in "_changed" which would have trigger automatically on capability change
-    if (this.currentStatus?.mode !== result.mode) {
-      // @ts-ignore
-      await this.driver.triggerDeviceFlow('modeChanged', { mode: result.mode }, this);
-    }
-
-    // Auto triggered by Homey due to name ending in "_changed"
-    // if (this.currentStatus?.currentLimit !== result.currentLimit) {
-      // @ts-ignore
-      // await this.driver.triggerDeviceFlow('current_limit_changed', { currentLimit: result.currentLimit }, this);
-    // }
-
-    this.currentStatus = result;
   }
 }
 
