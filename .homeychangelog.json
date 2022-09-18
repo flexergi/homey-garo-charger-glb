@@ -7,5 +7,8 @@
   },
   "1.2.0": {
     "en": "Added current limit capability and action card"
+  },
+  "1.2.1": {
+    "en": "Stability improvement when connection to charger is flaky"
   }
 }
