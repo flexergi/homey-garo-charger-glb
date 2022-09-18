@@ -1,0 +1,21 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Current Limit",
+    "sv": "Begränsa laddström"
+  },
+  "getable": true,
+  "setable": true,
+  "uiComponent": "slider",
+  "units": {
+    "en": "A",
+    "sv": "A"
+  },
+  "min": 6,
+  "max": 32,
+  "step": 1,
+  "decimals": 0,
+  "uiQuickAction": false,
+  "icon": "/assets/charging.svg",
+  "insights": false
+}

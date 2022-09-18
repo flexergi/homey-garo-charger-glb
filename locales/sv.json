@@ -5,7 +5,7 @@
       "nameExplanation" : "Vad vill du att laddaren ska kallas?",
       "ip_address" : "IP-adress",
       "connect" : "Lägg till enhet",
-      "ipAddressExplanation" : "Skriv in IP-adressen din laddare använder. Gör adressen statisk i din router eller DHCP-server."
+      "ipAddressExplanation" : "Skriv in IP-adressen din laddare använder (ex: 192.168.1.123). Gör adressen statisk i din router eller DHCP-server."
     }
   }
 }

@@ -3,3 +3,5 @@ export const setModeUrl = `${baseUrl}/mode`; // /ALWAYS_OFF /SCHEMA /ALWAYS_ON -
 export const statusUrl = `${baseUrl}/status?_=`;
 export const meterInfoUrl = `${baseUrl}/meterinfo/EXTERNAL?_=`
 export const energyUrl = `${baseUrl}/energy`;
+export const configUrl = `${baseUrl}/config?_=`;
+export const currentLimitUrl = `${baseUrl}/currentlimit`

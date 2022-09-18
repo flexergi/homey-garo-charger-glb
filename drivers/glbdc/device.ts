@@ -1,10 +1,11 @@
 import Homey from 'homey';
 import fetch from 'http.min';
 import { Mode } from '../../types';
+import { Config } from '../../types/config';
 import { Status } from '../../types/status';
-import { energyUrl, setModeUrl, statusUrl } from './device-const';
+import { configUrl, currentLimitUrl, energyUrl, setModeUrl, statusUrl } from './device-const';
 
-class Charger extends Homey.Device {
+export class Charger extends Homey.Device {
   currentStatus?: Status;
   statusInterval?: NodeJS.Timeout;
   energyInterval?: NodeJS.Timeout;
@@ -17,11 +18,6 @@ class Charger extends Homey.Device {
     this.log('GARO charge box device has been initialized');
     this.address = this.getSetting('host');
 
-    this.statusInterval = this.homey.setInterval(() => { this.pollStatus() }, 10000);
-    this.pollStatus();
-    this.energyInterval = this.homey.setInterval(() => { this.pollEnergy() }, 20000);
-    this.pollEnergy();
-
     if (this.hasCapability('connector') === false) {
       await this.addCapability('connector');
     }
@@ -29,16 +25,55 @@ class Charger extends Homey.Device {
     if (this.hasCapability('mode') === false) {
       await this.addCapability('mode');
     }
+    this.registerCapabilityListener("mode", (mode: Mode) => this.setMode(mode).catch(this.error));
 
     if (this.hasCapability('voltage')) {
       await this.removeCapability('voltage');
     }
 
-    this.registerCapabilityListener("mode", (mode: Mode) => this.setMode(mode).catch(this.error));
+    if (this.hasCapability('current_limit') === false) {
+      await this.addCapability('current_limit');
+    }
+    this.registerCapabilityListener("current_limit", (ampere: number) => this.setCurrentLimit(ampere).catch(this.error));
+
+    if (this.hasCapability('chargerStatus')) {
+      await this.removeCapability('chargerStatus');
+    }
+
+    // Start polling now that all capabilities are set up
+    this.statusInterval = this.homey.setInterval(() => { this.pollStatus() }, 10000);
+    this.pollStatus();
+    this.energyInterval = this.homey.setInterval(() => { this.pollEnergy() }, 20000);
+    this.pollEnergy();
   }
 
   async setMode(value: Mode) {
-    return fetch.post(`http://${this.address}:8080/${setModeUrl}/${value}`);
+    console.log(`POST new mode ${value}`);
+    const result = await fetch.post(`http://${this.address}:8080/${setModeUrl}/${value}`);
+    console.log(`    POST new mode ${value} set`);
+    return result;
+  }
+
+  async setCurrentLimit(ampere: number) {
+    const config = await this.getConfig();
+
+    console.log(`POST new current limit ${ampere}`);
+    const data: Config = {
+      ...config,
+      reducedIntervalsEnabled: true,
+      reducedCurrentIntervals: [
+        {
+          schemaId: 1,
+          chargeLimit: Math.min(config.switchChargeLimit, ampere),
+          start: '00:00:00',
+          stop: '24:00:00',
+          weekday: 8,
+        }
+      ],
+    };
+    const result = await fetch.post(`http://${this.address}:8080/${currentLimitUrl}`, data);
+    console.log(`   POST new current limit ${ampere} set`);
+    return result;
   }
 
   /**
@@ -108,6 +143,14 @@ class Charger extends Homey.Device {
     }
   }
 
+  async getConfig(): Promise<Config> {
+    const url = `http://${this.address}:8080/${configUrl}${(new Date()).getTime()}`;
+    console.log(`POST ${url}`);
+    const result = await fetch(url);
+    console.log(`    POST ${url} done`);
+    return result.data;
+  }
+
   async pollStatus() {
     const result: Status = await fetch.json(`http://${this.address}:8080/${statusUrl}${(new Date()).getTime()}`);
 
@@ -135,21 +178,32 @@ class Charger extends Homey.Device {
       await this.setCapabilityValue('mode', result.mode).catch(this.error);
     }
 
+    // CurrentLimit
+    const currentCurrentLimitValue = this.getCapabilityValue('current_limit');
+    if (currentCurrentLimitValue !== result.currentLimit) {
+      this.log(`currentLimit changed: current: ${currentCurrentLimitValue} - new: ${result.currentLimit}`);
+      await this.setCapabilityValue('current_limit', result.currentLimit).catch(this.error);
+    }
+
     // Trigger actions now that all capabilities are updated (change awaited)
 
+    // This one is needed due to name not ending in "_changed" which would have trigger automatically on capability change
     if (this.currentStatus?.connector !== result.connector) {
-      this.driver.ready().then(async () => {
-        // @ts-ignore
-        await this.driver.triggerDeviceFlow('connectorChanged', { status: result.connector }, this);
-      });
+      // @ts-ignore
+      await this.driver.triggerDeviceFlow('connectorChanged', { status: result.connector }, this);
     }
 
+    // This one is needed due to name not ending in "_changed" which would have trigger automatically on capability change
     if (this.currentStatus?.mode !== result.mode) {
-      this.driver.ready().then(async () => {
-        // @ts-ignore
-        await this.driver.triggerDeviceFlow('modeChanged', { mode: result.mode }, this);
-      });
+      // @ts-ignore
+      await this.driver.triggerDeviceFlow('modeChanged', { mode: result.mode }, this);
     }
+
+    // Auto triggered by Homey due to name ending in "_changed"
+    // if (this.currentStatus?.currentLimit !== result.currentLimit) {
+      // @ts-ignore
+      // await this.driver.triggerDeviceFlow('current_limit_changed', { currentLimit: result.currentLimit }, this);
+    // }
 
     this.currentStatus = result;
   }

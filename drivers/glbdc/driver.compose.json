@@ -7,7 +7,8 @@
     "measure_current",
     "meter_power",
     "measure_power",
-    "measure_temperature"
+    "measure_temperature",
+    "current_limit"
   ],
   "platforms": [
     "local"

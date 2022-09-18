@@ -5,7 +5,7 @@
       "nameExplanation" : "What would you like your charger to be called?",
       "ip_address" : "IP address",
       "connect" : "Add device",
-      "ipAddressExplanation" : "Type the IP address that you charger is using. Make the address static in your router or DHCP server."
+      "ipAddressExplanation" : "Type the IP address that you charger is using (ex: 192.168.1.123). Make the address static in your router or DHCP server."
     }
   }
 }

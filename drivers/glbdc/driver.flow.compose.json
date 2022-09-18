@@ -41,6 +41,27 @@
           }
         }
       ]
+    },
+    {
+      "id": "current_limit_changed",
+      "title": {
+        "en": "Current limit changed",
+        "sv": "Laddströmsbegränsning ändrades"
+      },
+      "tokens": [
+        {
+          "name": "currentLimit",
+          "type": "number",
+          "title": {
+            "en": "Current limit",
+            "sv": "Laddströmsbegränsning"
+          },
+          "example": {
+            "en": "11",
+            "sv": "11"
+          }
+        }
+      ]
     }
   ],
   "conditions": [
@@ -110,7 +131,7 @@
       },
       "titleFormatted": {
         "en": "Charger mode is !{{|not}} [[mode]]",
-        "sv": "Laddarens läge är !{{|inte}} [[mode]]"
+        "sv": "Laddarens läge är !{{|skiljt från}} [[mode]]"
       },
       "args": [
         {
@@ -189,6 +210,28 @@
               }
             }
           ]
+        }
+      ]
+    },
+    {
+      "id": "currentLimitControl",
+      "title": {
+        "en": "Control current limit",
+        "sv": "Styr begränsning av laddström"
+      },
+      "titleFormatted": {
+        "en": "Set current limit to [[currentLimit]] A",
+        "sv": "Sätt begränsning av laddström till [[currentLimit]] A"
+      },
+      "args": [
+        {
+          "name": "currentLimit",
+          "type": "number",
+          "title": {
+            "en": "Current limit",
+            "sv": "Laddströmsbegränsning"
+          },
+          "example": "11"
         }
       ]
     }

@@ -40,6 +40,10 @@
     ]
   },
   "support": "mailto:fredric@softblockrefinery.com",
+  "bugs": {
+    "url": "https://github.com/fgeorgsson/homey-garo-charger-glb/issues"
+  },
+  "source": "https://github.com/fgeorgsson/homey-garo-charger-glb",
   "flow": {
     "triggers": [
       {
@@ -87,6 +91,34 @@
             "example": {
               "en": "Schedule",
               "sv": "Schemastyrd"
+            }
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=glbdc"
+          }
+        ]
+      },
+      {
+        "id": "current_limit_changed",
+        "title": {
+          "en": "Current limit changed",
+          "sv": "Laddströmsbegränsning ändrades"
+        },
+        "tokens": [
+          {
+            "name": "currentLimit",
+            "type": "number",
+            "title": {
+              "en": "Current limit",
+              "sv": "Laddströmsbegränsning"
+            },
+            "example": {
+              "en": "11",
+              "sv": "11"
             }
           }
         ],
@@ -171,7 +203,7 @@
         },
         "titleFormatted": {
           "en": "Charger mode is !{{|not}} [[mode]]",
-          "sv": "Laddarens läge är !{{|inte}} [[mode]]"
+          "sv": "Laddarens läge är !{{|skiljt från}} [[mode]]"
         },
         "args": [
           {
@@ -262,6 +294,33 @@
             ]
           }
         ]
+      },
+      {
+        "id": "currentLimitControl",
+        "title": {
+          "en": "Control current limit",
+          "sv": "Styr begränsning av laddström"
+        },
+        "titleFormatted": {
+          "en": "Set current limit to [[currentLimit]] A",
+          "sv": "Sätt begränsning av laddström till [[currentLimit]] A"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=glbdc"
+          },
+          {
+            "name": "currentLimit",
+            "type": "number",
+            "title": {
+              "en": "Current limit",
+              "sv": "Laddströmsbegränsning"
+            },
+            "example": "11"
+          }
+        ]
       }
     ]
   },
@@ -275,7 +334,8 @@
         "measure_current",
         "meter_power",
         "measure_power",
-        "measure_temperature"
+        "measure_temperature",
+        "current_limit"
       ],
       "platforms": [
         "local"
@@ -370,6 +430,27 @@
         }
       ],
       "icon": "/assets/connector.svg"
+    },
+    "current_limit": {
+      "type": "number",
+      "title": {
+        "en": "Current Limit",
+        "sv": "Begränsa laddström"
+      },
+      "getable": true,
+      "setable": true,
+      "uiComponent": "slider",
+      "units": {
+        "en": "A",
+        "sv": "A"
+      },
+      "min": 6,
+      "max": 32,
+      "step": 1,
+      "decimals": 0,
+      "uiQuickAction": false,
+      "icon": "/assets/charging.svg",
+      "insights": false
     },
     "mode": {
       "type": "enum",

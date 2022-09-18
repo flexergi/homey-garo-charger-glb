@@ -2,7 +2,7 @@ import Homey from 'homey';
 import fetch from 'http.min';
 import { Status } from '../../types';
 import { statusUrl } from './device-const';
-
+import { Charger } from './device';
 class ChargerDriver extends Homey.Driver {
   flowCards: Record<string, Homey.FlowCardCondition | Homey.FlowCardAction | Homey.FlowCardTriggerDevice> = {};
   flowCardListeners: Record<string, Homey.FlowCard> = {};
@@ -22,6 +22,8 @@ class ChargerDriver extends Homey.Driver {
     // Triggers
     this.flowCards.connectorChanged = this.homey.flow.getDeviceTriggerCard('connectorChanged');
     this.flowCards.modeChanged = this.homey.flow.getDeviceTriggerCard('modeChanged');
+    // This one is auto triggered by Homey due to "_changed"
+    // this.flowCards.current_limit_changed = this.homey.flow.getDeviceTriggerCard('current_limit_changed');
 
     // Conditions
     this.flowCards.connectorStatus = this.homey.flow.getConditionCard('connectorStatus');
@@ -46,6 +48,15 @@ class ChargerDriver extends Homey.Driver {
       this.log(`[${args.device.getName()}] Action 'modeControl' triggered with ${args.mode}`);
       let errMsg = `Failed to change status to '${args.mode}'`;
       return args.device.setMode(args.mode)
+        .then(() => Promise.resolve(true))
+        .catch(() => Promise.reject(errMsg));
+    });
+
+    this.flowCards.currentLimitControl = this.homey.flow.getActionCard('currentLimitControl');
+    this.flowCardListeners.currentLimitControl = this.flowCards.currentLimitControl.registerRunListener(async (args: { device: Charger, currentLimit: number }) => {
+      this.log(`[${args.device.getName()}] Action 'currentLimitControl' triggered with ${args.currentLimit}`);
+      let errMsg = `Failed to set currentLimit to '${args.currentLimit}'`;
+      return args.device.setCurrentLimit(args.currentLimit)
         .then(() => Promise.resolve(true))
         .catch(() => Promise.reject(errMsg));
     });
