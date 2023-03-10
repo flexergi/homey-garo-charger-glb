@@ -1,6 +1,6 @@
 {
   "name": "com.softblockrefinery.garo-charger-meter",
-  "version": "1.0.0",
+  "version": "1.3.0",
   "main": "app.ts",
   "scripts": {
     "build": "tsc",
