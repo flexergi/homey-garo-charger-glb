@@ -403,14 +403,14 @@
         {
           "id": "NOT_CONNECTED",
           "title": {
-            "en": "Not connected",
-            "sv": "Ej ansluten"
+            "en": "No vehicle connected",
+            "sv": "Fordon ej anslutet"
           }
         },
         {
           "id": "CONNECTED",
           "title": {
-            "en": "Waiting for startsignal from car",
+            "en": "Waiting for start signal from car",
             "sv": "Väntar på startsignal från bil"
           }
         },
