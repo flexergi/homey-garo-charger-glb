@@ -335,8 +335,17 @@
         "meter_power",
         "measure_power",
         "measure_temperature",
-        "current_limit"
+        "current_limit",
+        "meter_power.current_session"
       ],
+      "capabilitiesOptions": {
+        "meter_power.current_session": {
+          "title": {
+            "en": "Energy used this session",
+            "sv": "Laddat denna session"
+          }
+        }
+      },
       "platforms": [
         "local"
       ],
@@ -450,7 +459,7 @@
       "decimals": 0,
       "uiQuickAction": false,
       "icon": "/assets/charging.svg",
-      "insights": false
+      "insights": true
     },
     "mode": {
       "type": "enum",

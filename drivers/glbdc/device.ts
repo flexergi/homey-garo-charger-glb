@@ -1,6 +1,6 @@
 import Homey from "homey";
 import fetch from "http.min";
-import { Mode } from "../../types";
+import { ConnectorStatus, Mode } from "../../types";
 import { Config } from "../../types/config";
 import { Status } from "../../types/status";
 import {
@@ -35,8 +35,8 @@ export class Charger extends Homey.Device {
       this.setMode(mode).catch(this.error)
     );
 
-    if (this.hasCapability("voltage")) {
-      await this.removeCapability("voltage");
+    if (this.hasCapability("meter_power.current_session") === false) {
+      await this.addCapability("meter_power.current_session");
     }
 
     if (this.hasCapability("current_limit") === false) {
@@ -45,6 +45,10 @@ export class Charger extends Homey.Device {
     this.registerCapabilityListener("current_limit", (ampere: number) =>
       this.setCurrentLimit(ampere).catch(this.error)
     );
+
+    if (this.hasCapability("voltage")) {
+      await this.removeCapability("voltage");
+    }
 
     if (this.hasCapability("chargerStatus")) {
       await this.removeCapability("chargerStatus");
@@ -194,7 +198,7 @@ export class Charger extends Homey.Device {
         result.currentTemperature
       ).catch(this.error);
 
-      if (result.connector === "CHARGING") {
+      if (result.connector === ConnectorStatus.Charging) {
         this.setCapabilityValue(
           "measure_current",
           result.currentChargingCurrent / 1000
@@ -206,6 +210,18 @@ export class Charger extends Homey.Device {
       } else {
         this.setCapabilityValue("measure_current", 0).catch(this.error);
         this.setCapabilityValue("measure_power", 0).catch(this.error);
+      }
+
+      if ([ConnectorStatus.ChargingFinished, ConnectorStatus.Charging].find(s => s === result.connector as ConnectorStatus)) {
+        this.setCapabilityValue(
+          "meter_power.current_session",
+          result.accSessionEnergy / 1000
+        ).catch(this.error);
+      } else {
+        this.setCapabilityValue(
+          "meter_power.current_session",
+          null
+        ).catch(this.error);
       }
 
       // Connector

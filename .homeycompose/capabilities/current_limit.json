@@ -17,5 +17,5 @@
   "decimals": 0,
   "uiQuickAction": false,
   "icon": "/assets/charging.svg",
-  "insights": false
+  "insights": true
 }
