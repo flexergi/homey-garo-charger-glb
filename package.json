@@ -10,7 +10,6 @@
   "engines": {
     "node": ">=12"
   },
-  "type": "module",
   "devDependencies": {
     "@tsconfig/node12": "^1.0.11",
     "@types/homey": "npm:homey-apps-sdk-v3-types@^0.3.4",

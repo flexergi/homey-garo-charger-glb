@@ -101,7 +101,6 @@ export class Charger extends Homey.Device {
         data
       );
       console.log(`   POST new current limit ${ampere} set`);
-      console.log('data', data);
       return result;
     } catch (e: any) {
       this.error("POST new mode failed: ", e.message);
@@ -212,16 +211,21 @@ export class Charger extends Homey.Device {
         this.setCapabilityValue("measure_power", 0).catch(this.error);
       }
 
-      if ([ConnectorStatus.ChargingFinished, ConnectorStatus.Charging].find(s => s === result.connector as ConnectorStatus)) {
+      if (
+        [
+          ConnectorStatus.Disabled,
+          ConnectorStatus.ChargingFinished,
+          ConnectorStatus.Charging,
+        ].find((s) => s === (result.connector as ConnectorStatus))
+      ) {
         this.setCapabilityValue(
           "meter_power.current_session",
           result.accSessionEnergy / 1000
         ).catch(this.error);
       } else {
-        this.setCapabilityValue(
-          "meter_power.current_session",
-          null
-        ).catch(this.error);
+        this.setCapabilityValue("meter_power.current_session", null).catch(
+          this.error
+        );
       }
 
       // Connector
