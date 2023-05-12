@@ -1,3 +1,8 @@
 {
-  "extends": "athom"
+  "extends": "athom",
+  "import/extensions": [".js", ".jsx", ".ts", ".tsx"],
+  "rules": {
+    "strict": 0,
+    "import/prefer-default-export": 0
+  }
 }
