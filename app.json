@@ -355,8 +355,8 @@
       ],
       "images": {
         "small": "/drivers/glbdc/assets/images/small.png",
-        "large": "/drivers/glbdc/assets/images/large.png",
-        "xlarge": "/drivers/glbdc/assets/images/xlarge.png"
+        "large": "/drivers/glbdc/assets/images/large.jpg",
+        "xlarge": "/drivers/glbdc/assets/images/xlarge.jpg"
       },
       "pair": [
         {
@@ -429,8 +429,8 @@
       ],
       "images": {
         "small": "/drivers/gnm3d-rs485/assets/images/small.png",
-        "large": "/drivers/gnm3d-rs485/assets/images/large.png",
-        "xlarge": "/drivers/gnm3d-rs485/assets/images/xlarge.png"
+        "large": "/drivers/gnm3d-rs485/assets/images/large.jpg",
+        "xlarge": "/drivers/gnm3d-rs485/assets/images/xlarge.jpg"
       },
       "pair": [
         {
