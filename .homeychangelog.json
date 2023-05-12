@@ -16,5 +16,8 @@
   },
   "1.3.1": {
     "en": "Energy charged in session continues to be shown when charger is deactivated"
+  },
+  "1.4.0": {
+    "en": "Added smart meter device to measure house consumption per phase and energy meter since device install"
   }
 }
