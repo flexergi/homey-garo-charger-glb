@@ -1,22 +1,32 @@
 {
   "name": {
-    "en": "Charger Box - GLBDC",
-    "sv": "Laddbox - GLBDC"
+    "en": "Smart Meter - GNM3D-RS485",
+    "sv": "Smartmätare - GNM3D-RS485"
   },
-  "class": "other",
+  "class": "sensor",
   "capabilities": [
-    "measure_current",
-    "meter_power",
-    "measure_power",
-    "measure_temperature",
-    "current_limit",
-    "meter_power.current_session"
+    "measure_current.L1",
+    "measure_current.L2",
+    "measure_current.L3",
+    "meter_power"
   ],
   "capabilitiesOptions": {
-    "meter_power.current_session": {
+    "measure_current.L1": {
       "title": {
-        "en": "Energy used this session",
-        "sv": "Laddat denna session"
+        "en": "L1 Current",
+        "sv": "L1 ström"
+      }
+    },
+    "measure_current.L2": {
+      "title": {
+        "en": "L2 Current",
+        "sv": "L2 ström"
+      }
+    },
+    "measure_current.L3": {
+      "title": {
+        "en": "L3 Current",
+        "sv": "L3 ström"
       }
     }
   },

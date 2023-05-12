@@ -327,7 +327,8 @@
   "drivers": [
     {
       "name": {
-        "en": "GLBDC"
+        "en": "Charger Box - GLBDC",
+        "sv": "Laddbox - GLBDC"
       },
       "class": "other",
       "capabilities": [
@@ -387,6 +388,80 @@
         }
       ],
       "id": "glbdc"
+    },
+    {
+      "name": {
+        "en": "Smart Meter - GNM3D-RS485",
+        "sv": "Smartmätare - GNM3D-RS485"
+      },
+      "class": "sensor",
+      "capabilities": [
+        "measure_current.L1",
+        "measure_current.L2",
+        "measure_current.L3",
+        "meter_power"
+      ],
+      "capabilitiesOptions": {
+        "measure_current.L1": {
+          "title": {
+            "en": "L1 Current",
+            "sv": "L1 ström"
+          }
+        },
+        "measure_current.L2": {
+          "title": {
+            "en": "L2 Current",
+            "sv": "L2 ström"
+          }
+        },
+        "measure_current.L3": {
+          "title": {
+            "en": "L3 Current",
+            "sv": "L3 ström"
+          }
+        }
+      },
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [
+        "lan"
+      ],
+      "images": {
+        "small": "/drivers/gnm3d-rs485/assets/images/small.png",
+        "large": "/drivers/gnm3d-rs485/assets/images/large.png",
+        "xlarge": "/drivers/gnm3d-rs485/assets/images/xlarge.png"
+      },
+      "pair": [
+        {
+          "id": "configure_ip"
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "IP address",
+            "sv": "IP-adress"
+          },
+          "children": [
+            {
+              "id": "host",
+              "type": "text",
+              "value": "0.0.0.0",
+              "label": {
+                "en": "IP address",
+                "sv": "IP adress"
+              }
+            }
+          ]
+        }
+      ],
+      "id": "gnm3d-rs485"
     }
   ],
   "capabilities": {
